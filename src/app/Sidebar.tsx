@@ -9,14 +9,18 @@ import {
     VStack, 
     Drawer,  
     Portal,
+    useDisclosure
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHouse, faFolderOpen, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+
+import { WalletModal } from "@/components/ui/WalletModal";
 
 export const SideBar = ({ children }: { children: ReactNode }) => {
     const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const toggleDrawer = () => setIsOpen(!isOpen);
+    const { open: isWalletModalOpen, onOpen: onOpenWalletModal, onClose: onCloseWalletModal } = useDisclosure();
 
     return (
         <Flex>
@@ -55,15 +59,24 @@ export const SideBar = ({ children }: { children: ReactNode }) => {
                                         <FontAwesomeIcon icon={faFolderOpen} />
                                         My Projects
                                     </Button>
-                                    <Button
-                                        w="full"
-                                        justifyContent="flex-start"
-                                        mt="auto"
-                                        onClick={toggleDrawer} // Replace with disconnectWallet when implemented
-                                    >
-                                        <FontAwesomeIcon icon={faSignOutAlt} />
-                                        Sign Out
-                                    </Button>
+                                    <Box mt="auto">
+                                        <Button
+                                            w="full"
+                                            justifyContent="flex-start"
+                                            onClick={onOpenWalletModal} // Replace with disconnectWallet when implemented
+                                        >
+                                            <FontAwesomeIcon icon={faSignOutAlt} />
+                                            Connect Wallet
+                                        </Button>
+                                        <Button
+                                            w="full"
+                                            justifyContent="flex-start"
+                                            onClick={toggleDrawer} // Replace with disconnectWallet when implemented
+                                        >
+                                            <FontAwesomeIcon icon={faSignOutAlt} />
+                                            Sign Out
+                                        </Button>
+                                    </Box>
                                 </VStack>
                             </Drawer.Body>
                         </Drawer.Content>
@@ -71,6 +84,8 @@ export const SideBar = ({ children }: { children: ReactNode }) => {
                 </Portal>
             </Drawer.Root>
             {children}
+
+            <WalletModal isOpen={isWalletModalOpen} onClose={onCloseWalletModal} />
         </Flex>
         
     );
