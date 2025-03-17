@@ -27,7 +27,7 @@ const ConnectYourWallet = ({ providers, handleConnect }: { providers: EIP6963Pro
     return (
         <VStack minH="300px" p={5} textAlign="center" justifyContent="center">
             <Text fontSize="lg" fontWeight="bold">No Wallet Connected</Text>
-            <Text fontSize="md" color="gray.500" mb="12px">
+            <Text fontWeight="semibold" fontSize="md" color="gray.500" mb="12px">
                 Connect a wallet to start using the app.
             </Text>
             {providers.map(provider => {

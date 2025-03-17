@@ -44,7 +44,7 @@ export const CampaignList = ({ campaigns }: { campaigns: Campaign[] }) => {
                 <Box flex="1" fontSize="24px" fontWeight="bold">All Campaigns</Box>
                 <Flex flex="2" gap="12px" justifyContent="flex-end">
                     <Box width="60%" position="relative">
-                        <Input p="4px 8px 4px 40px" onChange={(e) => { setSearchTerm(e.target.value) }} />
+                        <Input p="4px 8px 4px 40px" placeholder="Search Projects..." onChange={(e) => { setSearchTerm(e.target.value) }} />
                         <FontAwesomeIcon style={{ position: "absolute", left: "12px", top: "12px" }} icon={faMagnifyingGlass} />
                     </Box>
                     { hasWalletConnected ? (
