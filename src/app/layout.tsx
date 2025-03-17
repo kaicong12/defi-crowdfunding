@@ -27,9 +27,7 @@ export default function RootLayout({
         <body className={`${montserrat.className}`} style={{ background: "#f2f2f2"}}>
           <StoreProvider>
             <Provider>
-              <SideBar>
-                {children}
-              </SideBar>
+              {children}
             </Provider>
           </StoreProvider>
         </body>
