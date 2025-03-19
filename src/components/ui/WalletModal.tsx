@@ -1,9 +1,14 @@
+"use client";
+
 import { useSyncProviders } from "@/hooks/useSyncProviders"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 import { Dialog, Portal, VStack, Text, Button, Flex } from "@chakra-ui/react"
 import { EIP6963ProviderDetail, EIP1193Provider } from "@/lib/types"
 import { IWalletInformation } from "../types"
 import { configureWallet, configureUserAcc } from "@/lib/features/walletSlice"
+import { ethers } from "ethers"
+
+import { useEffect } from "react"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
@@ -84,6 +89,20 @@ export const WalletModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () 
     const dispatch = useAppDispatch()
     const wallet = useAppSelector(state => state.wallet);
     const { provider: currentProvider, walletInfo, address: userAccount } = wallet;
+
+    useEffect(() => {
+        if (currentProvider && userAccount) {
+            console.log("enter")
+            // Create an ethers provider from MetaMask
+            const newProvider = new ethers.providers.Web3Provider(window.ethereum)
+            console.log({ newProvider })
+            // setProvider(newProvider)
+
+            // // Create a contract instance
+            // const newContract = new ethers.Contract(contractAddress, contractABI, newProvider.getSigner())
+            // setContract(newContract)
+        }
+    }, [currentProvider, userAccount])
     
     const handleAccountChange = (accounts: string[]) => {
         if (accounts.length === 0) {
@@ -96,7 +115,7 @@ export const WalletModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () 
         if (!currentProvider) {
             return;
         }
-        const res = await currentProvider.request({ method: "wallet_revokePermissions", params: [{ eth_accounts: {} }]})
+        await currentProvider.request({ method: "wallet_revokePermissions", params: [{ eth_accounts: {} }]})
         dispatch(configureWallet(null));
         dispatch(configureUserAcc(null));
     }

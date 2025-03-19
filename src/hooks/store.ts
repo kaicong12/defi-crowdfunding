@@ -13,7 +13,6 @@ export const store = {
         function onAnnouncement(event: EIP6963AnnounceProviderEvent) {
             if (providers.map((p) => p.info.uuid).includes(event.detail.info.uuid))
                 return
-            console.log(event.detail, 'detials;')
             providers = [...providers, event.detail]
             callback()
         }
