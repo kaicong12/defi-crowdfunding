@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Provider } from "@/components/ui/provider";
-import { SideBar } from "./Sidebar";
+import { Toaster } from "@/components/ui/toaster";
 import { Montserrat } from "next/font/google";
 import StoreProvider from "./StateProvider";
 
@@ -28,6 +28,7 @@ export default function RootLayout({
           <StoreProvider>
             <Provider>
               {children}
+              <Toaster />
             </Provider>
           </StoreProvider>
         </body>
