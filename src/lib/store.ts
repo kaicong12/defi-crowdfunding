@@ -5,7 +5,11 @@ export const makeStore = () => {
   return configureStore({
     reducer: {
       wallet: walletReducer,
-    }
+    },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }),
   })
 }
 

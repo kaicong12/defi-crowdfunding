@@ -93,7 +93,7 @@ export const WalletModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () 
     useEffect(() => {
         if (currentProvider && userAccount) {
             // Create an ethers provider from MetaMask
-            const newProvider = new ethers.providers.Web3Provider(window.ethereum)
+            const newProvider = window.ethereum ? new ethers.BrowserProvider(window.ethereum) : ethers.getDefaultProvider()
             // setProvider(newProvider)
 
             // // Create a contract instance

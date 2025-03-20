@@ -5,7 +5,7 @@ interface IconProps {
 
 export const EthereumIcon = (props: IconProps) => {
     return (
-        <svg {...props} xmlSpace="preserve" version="1.1" shapeRendering="geometricPrecision" textRendering="geometricPrecision" imageRendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" {...props} xmlSpace="preserve" version="1.1" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fillRule="evenodd" clipRule="evenodd" viewBox="0 0 784.37 1277.39">
             <g id="Layer_x0020_1">
                 <metadata id="CorelCorpID_0Corel-Layer"/>
                 <g id="_1421394342400">

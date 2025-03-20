@@ -9,7 +9,7 @@ import { CampaignCard } from "./CampaignCard";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useState, useMemo } from "react";
 
-import { Campaign } from "./types";
+import { Campaign } from "../types";
 import { TopBar } from "./TopBar";
 import { WalletModal } from "@/components/ui/WalletModal";
 import { CreateCampaignModal } from "@/components/ui/CreateCampaign";

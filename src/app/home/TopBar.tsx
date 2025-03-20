@@ -36,18 +36,35 @@ export const TopBar = ({
                     <FontAwesomeIcon style={{ position: "absolute", left: "12px", top: "12px" }} icon={faMagnifyingGlass} />
                 </Box>
                 { hasWalletConnected ? (
-                    <Button maxW="135px" onClick={onOpenWalletModal} padding="4px" borderRadius="6px">
-                        <Image src={walletInfo.icon} alt={"Wallet Icon"} width="30" height="30" />
-                        <Text truncate fontWeight="bold" fontSize="20px">{ userAccount }</Text>
+                    <Button 
+                        maxW="135px" 
+                        onClick={onOpenWalletModal} 
+                        padding="4px 8px" 
+                        borderRadius="6px"
+                        _hover={{ background: "#E0E0E0" }}
+                    >
+                        <Image src={walletInfo.icon} alt={"Wallet Icon"} width="20" height="20" />
+                        <Text fontWeight="bold" fontSize="14px" truncate>{ userAccount }</Text>
                     </Button>
                 ) : (
-                    <Button onClick={onOpenWalletModal} padding="4px" borderRadius="6px">
-                        Connect Wallet
+                    <Button 
+                        onClick={onOpenWalletModal} 
+                        padding="4px 8px" 
+                        borderRadius="6px"
+                        _hover={{ background: "#E0E0E0" }}
+                    >
+                        <Text fontWeight="semibold" fontSize="14px">Connect Wallet</Text>
                     </Button>
                 )}
                 
-                <Button disabled={!hasWalletConnected} onClick={onOpenCreateModal} padding="4px" borderRadius="6px">
-                    Create Campaign
+                <Button 
+                    disabled={!hasWalletConnected}
+                    onClick={onOpenCreateModal} 
+                    padding="4px 8px" 
+                    borderRadius="6px"
+                    _hover={{ background: "#E0E0E0" }}
+                >
+                    <Text fontWeight="semibold" fontSize="14px"> Create Campaign</Text>
                 </Button>
             </Flex>
         </Flex>
