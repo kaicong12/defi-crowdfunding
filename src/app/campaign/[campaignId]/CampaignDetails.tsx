@@ -1,43 +1,68 @@
-"use client";
 import { Campaign } from "@/app/types";
-import { Box, Heading, VStack, Text, Image, Stack, Button, HStack, Progress } from '@chakra-ui/react';
+import { Box, Heading, Text, Image, Flex } from '@chakra-ui/react';
+import { DonationCard } from "../DonateCard";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faStopwatch, faShieldHalved } from '@fortawesome/free-solid-svg-icons'
 
 export const CampaingDetails = ({ campaign }: { campaign: Campaign }) => {
     const { image, name, description, deadline, donatedAmount, amount } = campaign;
-    const donationProgress = (donatedAmount / amount) * 100;
+    const deadlineDate = new Date(deadline * 1000);
+    const currentDate = new Date();
+    // Calculate the difference in time (milliseconds)
+    const timeDifference = deadlineDate - currentDate;
+    const daysLeft = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
     return (
-        <Box maxW="4xl" mx="auto" p={6} color="black">
-            <Stack direction={{ base: 'column', md: 'row' }} align="flex-start">
-                <Image src={image} alt={name} borderRadius="md" boxSize={{ base: '100%', md: '400px' }} />
-                <VStack align="flex-start" flex="1">
-                    <Heading as="h1" size="xl" fontWeight="bold">{name}</Heading>
-                    <Text fontSize="lg" color="gray.600">{description}</Text>
+        <Box mx="auto" p="32px 48px" color="black" position="absolute" width="100%">
+            <Heading as="h1" fontSize="32px" fontWeight="bold" my="24px">{name}</Heading>
+            <Flex justifyContent="space-between">
+                <Box flex="2">
+                    <Image src={image} alt={name} borderRadius="md" boxSize={{ base: '100%' }} maxH="500px" />
 
-                    <Progress.Root value={donationProgress} width="100%">
-                        <HStack>
-                            <Progress.Track flex="1">
-                                <Progress.Range />
-                            </Progress.Track>
-                            <Progress.ValueText>
-                                <Text fontWeight="semibold" fontSize="sm">
-                                    {donatedAmount} / {amount} ETH
-                                </Text>
-                            </Progress.ValueText>
-                        </HStack>
-                    </Progress.Root>
+                    <Box
+                        mt={4}
+                        py={3}
+                        borderTop="1px solid #c0bdb8"
+                        borderBottom="1px solid #c0bdb8"
+                        display="flex"
+                        gap="8px"
+                    >
+                        <Flex 
+                            color="#015d32"
+                            alignItems="center" 
+                            gap="6px" 
+                            borderRadius="12px" 
+                            background="#cef3bd" 
+                            border="1px solid rgb(0, 135, 72)"
+                            p="4px 12px"
+                            flexGrow={0}
+                        >
+                            <FontAwesomeIcon height="14px" icon={faStopwatch} />
+                            <Text fontWeight="bold" fontSize="14px">{daysLeft} days left</Text>
+                        </Flex>
 
-                    <HStack justify="flex-start" width="100%">
-                        <Button variant="outline" colorScheme="blue" flex="1">Share</Button>
-                        <Button colorScheme="green" flex="1">Donate Now</Button>
-                    </HStack>
+                        <Flex 
+                            color="#015d32"
+                            alignItems="center" 
+                            gap="6px" 
+                            borderRadius="12px" 
+                            background="#cef3bd" 
+                            border="1px solid rgb(0, 135, 72)"
+                            p="4px 12px"
+                            flexGrow={0}
+                        >
+                            <FontAwesomeIcon height="14px" icon={faShieldHalved} />
+                            <Text fontWeight="bold" fontSize="14px">Donation protected</Text>
+                        </Flex>
+                    </Box>
 
-                    <HStack justify="space-between" width="100%">
-                        <Text fontSize="md">Funds Raised: <strong>{donatedAmount} ETH</strong></Text>
-                        <Text fontSize="md">Goal: <strong>{amount} ETH</strong></Text>
-                    </HStack>
-                </VStack>
-            </Stack>
+                    <Text mt={5} fontSize="16px">{description}</Text>
+                </Box>
+                <Box flex="1" position="sticky" top="0" ml={6}>
+                    <DonationCard donatedAmount={donatedAmount} amount={amount} />
+                </Box>
+                
+            </Flex>
         </Box>
     );
 }
