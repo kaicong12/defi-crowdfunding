@@ -98,8 +98,8 @@ export const WalletModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () 
     const hasConnectedWallet = !!(connectedWallet && userAccount)
 
     const availableWallets = useMemo(() => {
-        if (window.ethereum) {
-            const providers = window.ethereum.providers || [];
+        if (window?.ethereum) {
+            const providers = window?.ethereum.providers || [];
             const detectedWallets = providers.map((p: any) => {
                 if (p.isMetaMask) {
                     return { name: "MetaMask", provider: p, icon: "metamask.svg" };
