@@ -1,3 +1,5 @@
+"use client";
+
 import { 
     Box, 
     Button,
@@ -6,13 +8,16 @@ import {
     HStack,
     Progress, 
     Stack, 
-    Text 
+    Text,
+    useDisclosure
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHandHoldingDollar } from '@fortawesome/free-solid-svg-icons'
 
 export const DonationCard = ({ donatedAmount, amount }: { donatedAmount: number, amount: number }) => {
-  const percentageRaised = (donatedAmount / amount) * 100;
+  const { open: shareModalOpen, onOpen: onOpenShareModal, onClose: onCloseShareModal } = useDisclosure();
+  const { open: donateNowOpen, onOpen: onOpenDonateModal, onClose: onCloseDonateModal } = useDisclosure();
+    const percentageRaised = (donatedAmount / amount) * 100;
   const donors = [
     { name: "Anonymous", amount: 10000 },
     { name: "Anonymous", amount: 10000 },
@@ -50,6 +55,7 @@ export const DonationCard = ({ donatedAmount, amount }: { donatedAmount: number,
                 bg="#f3bc51" 
                 color="black" 
                 borderRadius="6px" 
+                onClick={onOpenShareModal}
                 _hover={{ background: "linear-gradient(180deg, #f9db74, #f3bc51)" }}
             >
                 Share
@@ -59,6 +65,7 @@ export const DonationCard = ({ donatedAmount, amount }: { donatedAmount: number,
                 bg="#f3bc51" 
                 color="black" 
                 borderRadius="6px" 
+                onClick={onOpenDonateModal}
                 _hover={{ background: "linear-gradient(180deg, #f9db74, #f3bc51)" }}
             >
                 Donate Now

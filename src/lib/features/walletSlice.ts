@@ -1,32 +1,35 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { EIP6963ProviderInfo, EIP1193Provider, EIP6963ProviderDetail } from '../types'
 
 export interface WalletState {
-    walletInfo: EIP6963ProviderInfo | null;
     address: string | null;
-    provider: EIP1193Provider | null;
+    provider: any;
+    connectedWallet: {
+        name: string;
+        icon: string;
+    } | null;
 }
 
 const initialState: WalletState = {
     provider: null,
-    walletInfo: null,
-    address: null
+    address: null,
+    connectedWallet: null,
 }
 
 export const walletSlice = createSlice({
     name: "wallet",
     initialState,
     reducers: {
-        configureWallet: (state, action: PayloadAction<EIP6963ProviderDetail | null>) => {
+        configureWallet: (state, action: PayloadAction<any | null>) => {
             if (!action.payload) {
-                state.walletInfo = null;
                 state.provider = null;
+                state.address = null;
+                state.connectedWallet = null;
                 return;
-            }
+            }   
 
-            const { info, provider } = action.payload
-            state.walletInfo = info;
+            const { connectedWallet, provider } = action.payload
             state.provider = provider;
+            state.connectedWallet = connectedWallet;
         },
         configureUserAcc: (state, action: PayloadAction<string | null>) => {
             state.address = action.payload;

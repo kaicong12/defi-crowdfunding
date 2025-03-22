@@ -1,6 +1,6 @@
 import { Campaign } from "@/app/types";
 import { Box, Heading, Text, Image, Flex } from '@chakra-ui/react';
-import { DonationCard } from "../DonateCard";
+import { DonationCard } from "./DonateCard";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStopwatch, faShieldHalved } from '@fortawesome/free-solid-svg-icons'
 

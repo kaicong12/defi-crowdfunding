@@ -24,8 +24,8 @@ export const TopBar = ({
     setSearchTerm 
 }: ITopBarProps) => {
     const wallet = useAppSelector(state => state.wallet);
-    const { walletInfo, address: userAccount } = wallet;
-    const hasWalletConnected = !!(walletInfo && userAccount)
+    const { connectedWallet, address: userAccount } = wallet;
+    const hasWalletConnected = !!(connectedWallet && userAccount);
 
     return (
         <Flex mb="30px" color="black" justifyContent="space-between" alignItems="center">
@@ -43,7 +43,7 @@ export const TopBar = ({
                         borderRadius="6px"
                         _hover={{ background: "#E0E0E0" }}
                     >
-                        <Image src={walletInfo.icon} alt={"Wallet Icon"} width="20" height="20" />
+                        <Image src={connectedWallet?.icon} alt={"Wallet Icon"} width="20" height="20" />
                         <Text fontWeight="bold" fontSize="14px" truncate>{ userAccount }</Text>
                     </Button>
                 ) : (

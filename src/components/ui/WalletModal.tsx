@@ -1,33 +1,40 @@
 "use client";
 
-import { useSyncProviders } from "@/hooks/useSyncProviders"
+import Image from 'next/image'
 import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 import { Dialog, Portal, VStack, Text, Button, Flex } from "@chakra-ui/react"
-import { EIP6963ProviderDetail, EIP1193Provider } from "@/lib/types"
-import { IWalletInformation } from "../types"
+import { IWalletInformation, IConnectWallet } from "./types"
 import { configureWallet, configureUserAcc } from "@/lib/features/walletSlice"
 import { ethers } from "ethers"
 
-import { useEffect } from "react"
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { useMemo, useCallback } from "react";
 
 const MissingWallet = () => {
     return (
-        <VStack p={5} border="1px dashed #ddd" borderRadius="10px" textAlign="center">
-            <Text fontSize="xl" fontWeight="bold">No Wallets Detected</Text>
-            <Text fontSize="md" color="gray.500">
+        <VStack minH="300px" alignItems="center" justifyContent="center" p={5} borderRadius="10px" textAlign="center">
+            <Text fontSize="xl" color="white" fontWeight="bold">No Wallets Detected</Text>
+            <Text fontSize="md" color="gray.500" width="80%" mt="12px">
                 Get started by installing MetaMask or another supported wallet.
             </Text>
-            <Button asChild colorScheme="blue">
+            <Button 
+                asChild
+                padding="30px 24px"
+                width="60%"
+                mt="24px"
+                bg="#383838"
+                borderRadius="12px"
+                color="white"
+                _hover={{ backgroundColor: "#404040" }}
+            >
                 <a  href="https://metamask.io/download/" target="_blank">Install MetaMask</a>
             </Button>
         </VStack>
     )
 }
 
-const ConnectYourWallet = ({ providers, handleConnect }: { providers: EIP6963ProviderDetail[], handleConnect: (provider: EIP6963ProviderDetail) => void }) => {
+const ConnectYourWallet = ({ availableWallets, handleConnect }: IConnectWallet) => {
     // render this component when there is no wallet connected 
     return (
         <VStack minH="300px" p={5} textAlign="center" justifyContent="center">
@@ -35,11 +42,11 @@ const ConnectYourWallet = ({ providers, handleConnect }: { providers: EIP6963Pro
             <Text fontWeight="semibold" fontSize="md" color="gray.500" mb="12px">
                 Connect a wallet to start using the app.
             </Text>
-            {providers.map(provider => {
+            {availableWallets.map(wallet => {
                 return (
                     <Button 
-                        key={provider.info.uuid} 
-                        onClick={() => handleConnect(provider)} variant="outline"
+                        key={`wallet-${wallet.name}`} 
+                        onClick={() => handleConnect(wallet.name, wallet.icon, wallet.provider)} variant="outline"
                         padding="30px 24px"
                         width="60%"
                         mt="12px"
@@ -48,8 +55,8 @@ const ConnectYourWallet = ({ providers, handleConnect }: { providers: EIP6963Pro
                         _hover={{ backgroundColor: "#404040" }}
                     >
                         <Flex width="100%" alignItems="center" gap="12px" justifyContent="space-between">
-                            <Text fontWeight="bold">{provider.info.name}</Text>
-                            <img height="30px" width="30px" src={provider.info.icon} alt={provider.info.name} />
+                            <Text fontWeight="bold">{wallet.name}</Text>
+                            <Image height="30" width="30" src={wallet.icon} alt={wallet.name} />
                         </Flex>
                     </Button>
                 )
@@ -58,11 +65,11 @@ const ConnectYourWallet = ({ providers, handleConnect }: { providers: EIP6963Pro
     )
 }
 
-const WalletInformation = ({currentProvider, walletInfo, userAccount, disconnectWallet }: IWalletInformation) => {
+const WalletInformation = ({ connectedWallet, userAccount, disconnectWallet }: IWalletInformation) => {
     // use this component to disconnect wallet
     return (
         <VStack minH="300px" p={5} textAlign="center" justifyContent="center">
-            <img height="50px" width="50px" src={walletInfo.icon} alt={walletInfo.name} />
+            <Image height="50" width="50" src={connectedWallet.icon} alt={connectedWallet.name} />
             <Text fontSize="lg" fontWeight="bold" mt="30px">Connected Wallet</Text>
             <Text mt="12px" fontSize="md" color="gray.500" mb="12px">
                 {userAccount}
@@ -75,7 +82,7 @@ const WalletInformation = ({currentProvider, walletInfo, userAccount, disconnect
                 bg="#383838"
                 borderRadius="12px"
                 _hover={{ backgroundColor: "#404040" }}
-                onClick={(e) => { disconnectWallet(currentProvider)}}
+                onClick={disconnectWallet}
             >
                 <FontAwesomeIcon style={{ fontSize: "36px" }} icon={faRightFromBracket} />
                 <Text fontWeight="bold">Disconnect Wallet</Text>
@@ -85,60 +92,68 @@ const WalletInformation = ({currentProvider, walletInfo, userAccount, disconnect
 }
 
 export const WalletModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
-    const providers = useSyncProviders()
     const dispatch = useAppDispatch()
     const wallet = useAppSelector(state => state.wallet);
-    const { provider: currentProvider, walletInfo, address: userAccount } = wallet;
+    const { connectedWallet, address: userAccount } = wallet;
+    const hasConnectedWallet = !!(connectedWallet && userAccount)
 
-    useEffect(() => {
-        if (currentProvider && userAccount) {
-            // Create an ethers provider from MetaMask
-            const newProvider = window.ethereum ? new ethers.BrowserProvider(window.ethereum) : ethers.getDefaultProvider()
-            // setProvider(newProvider)
+    const availableWallets = useMemo(() => {
+        if (window.ethereum) {
+            const providers = window.ethereum.providers || [];
+            const detectedWallets = providers.map((p: any) => {
+                if (p.isMetaMask) {
+                    return { name: "MetaMask", provider: p, icon: "metamask.svg" };
+                } else if (p.isCoinbaseWallet) {
+                    return { name: "Coinbase Wallet", provider: p, icon: "coinbase.svg" };
+                }
+                // Add more wallets as needed
+                return null;
+            }).filter((wallet: any) => wallet !== null);
 
-            // // Create a contract instance
-            // const newContract = new ethers.Contract(contractAddress, contractABI, newProvider.getSigner())
-            // setContract(newContract)
+            return detectedWallets;
         }
-    }, [currentProvider, userAccount])
-    
-    const handleAccountChange = (accounts: string[]) => {
-        if (accounts.length === 0) {
-            return
-        }
-        dispatch(configureUserAcc(accounts?.[0]));
-    }
 
-    const disconnectWallet = async (currentProvider: EIP1193Provider | null) => {
-        if (!currentProvider) {
-            return;
-        }
-        await currentProvider.request({ method: "wallet_revokePermissions", params: [{ eth_accounts: {} }]})
+        return [];
+    }, []);
+
+    const disconnectWallet = useCallback(async () => {
+        dispatch(configureUserAcc(''));
         dispatch(configureWallet(null));
-        dispatch(configureUserAcc(null));
-    }
+    }, [dispatch]);
 
-    const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
+    const handleConnect = useCallback(async (name: string, icon: string, selectedProvider: any) => {
         try {
-            const accounts = await providerWithInfo.provider.request({
-                method: "eth_requestAccounts"
-            }) as string[]
+            await selectedProvider.request({ method: 'eth_requestAccounts' });
+            selectedProvider.on('accountsChanged', (accounts: string[]) => {
+                const currentAccount = accounts[0];
+                dispatch(configureUserAcc(currentAccount));
+            });
             
-            providerWithInfo.provider
-                    .on("accountsChanged", handleAccountChange)
-
-            dispatch(configureWallet(providerWithInfo));
-            dispatch(configureUserAcc(accounts?.[0]));
+            const newProvider = new ethers.BrowserProvider(selectedProvider);
+            const signer = await newProvider.getSigner();
+            const address = await signer.getAddress();
+            dispatch(configureWallet({ connectedWallet: { name, icon }, provider: newProvider }));
+            dispatch(configureUserAcc(address));
             onClose()
-
         } catch (error) {
-            console.error(error)
+            console.error("Connection failed:", error);
         }
-    }
+    }, [dispatch, onClose]);
 
-    const hasConnectedWallet = !!(walletInfo && userAccount)
 
-    // render wallet details here
+    const DialogBody = useMemo(() => {
+        if (!availableWallets.length) {
+            return <MissingWallet />
+        } else if (hasConnectedWallet) {
+            return <WalletInformation 
+                connectedWallet={connectedWallet} 
+                userAccount={userAccount} 
+                disconnectWallet={disconnectWallet} 
+            />
+        }
+        return <ConnectYourWallet availableWallets={availableWallets} handleConnect={handleConnect} />
+    }, [availableWallets, hasConnectedWallet, handleConnect, connectedWallet, userAccount, disconnectWallet])
+
     return (
         <Dialog.Root open={isOpen} onOpenChange={onClose} placement={"center"} >
             <Portal>
@@ -147,16 +162,7 @@ export const WalletModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () 
                     <Dialog.Content bg="#2B2B2B" borderRadius="20px">
                         <Dialog.Body>
                             <Dialog.CloseTrigger />
-                            {providers.length === 0 ? <MissingWallet /> : null}
-                            {hasConnectedWallet ? (
-                                <WalletInformation 
-                                    currentProvider={currentProvider}
-                                    walletInfo={walletInfo} 
-                                    userAccount={userAccount} 
-                                    disconnectWallet={disconnectWallet} 
-                                />
-                            ) : <ConnectYourWallet providers={providers} handleConnect={handleConnect} />}
-                            
+                                {DialogBody}
                         </Dialog.Body>
                     </Dialog.Content>
                 </Dialog.Positioner>
