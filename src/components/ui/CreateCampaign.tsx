@@ -25,7 +25,7 @@ export const CreateCampaignModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
     const [description, setDescription] = useState("");
     const [deadline, setDeadline] = useState("");
     const [amount, setAmount] = useState("");
-    const { address: userAccount } = useAppSelector(state => state.wallet);
+    const { address: userAccount, provider, deployedAddress, contractABI } = useAppSelector(state => state.wallet);
     const [errors, setErrors] = useState<InputErrors>({
         campaignName: "",
         imageUrl: "",
@@ -83,48 +83,42 @@ export const CreateCampaignModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
         }
 
         const deadlineUnix = new Date(deadline).getTime() / 1000;
-        const amountInWei = ethers.utils.parseEther(amount);
 
         try {
             const contract = await getCampaignContract();
+            console.log({ contract })
             const tx = await contract.createCampaigns(
                 campaignName,
                 imageUrl,
                 userAccount,
                 description,
                 deadlineUnix,
-                amountInWei
+                amount
             );
 
             await tx.wait();
-            // toaster.create({
-            //     title: "Campaign Created",
-            //     description: "Your campaign has been successfully created.",
-            //     status: "success",
-            //     duration: 5000,
-            //     isClosable: true,
-            // });
+            toaster.create({
+                title: "Campaign Created",
+                description: "Your campaign has been successfully created.",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+            });
 
             onClose(); // close the modal after successful creation
         } catch (error) {
-            // toaster.create({
-            //     title: "Transaction failed",
-            //     description: "There was an error creating your campaign. Please try again.",
-            //     status: "error",
-            //     duration: 5000,
-            //     isClosable: true,
-            // });
+            console.log(error.message);
+            toaster.create({
+                title: "Transaction failed",
+                description: "There was an error creating your campaign. Please try again.",
+                type: "error"
+            });
         }
     };
 
     const getCampaignContract = async () => {
-        // Assuming you have a method to get the contract, for example:
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const contractAddress = "YOUR_CONTRACT_ADDRESS"; // replace with your contract address
-        const contractABI = [ /* your contract ABI */ ];
-
-        return new ethers.Contract(contractAddress, contractABI, signer);
+        const signer = await provider.getSigner();
+        return new ethers.Contract(deployedAddress, contractABI, signer);
     };
 
     const handleInputChange = useCallback((e) => {

@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import deployedContract from "@/CrowdFunding.json"
 
 export interface WalletState {
     address: string | null;
@@ -7,12 +8,18 @@ export interface WalletState {
         name: string;
         icon: string;
     } | null;
+    deployedAddress: string;
+    contractABI: any;
+    contract: any;
 }
 
 const initialState: WalletState = {
     provider: null,
     address: null,
     connectedWallet: null,
+    deployedAddress: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    contractABI: deployedContract.abi,
+    contract: null,
 }
 
 export const walletSlice = createSlice({

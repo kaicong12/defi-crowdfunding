@@ -27,6 +27,22 @@ contract CrowdFunding {
     mapping(uint => Campaign) public campaigns;
     uint[] campaignIds;
 
+    constructor() {
+        Campaign memory testCampaign = Campaign({
+            id: 1000,
+            name: "Test Campaign",
+            image: "https://via.placeholder.com/150",
+            owner: msg.sender,
+            description: "This is a test campaign",
+            deadline: block.timestamp + 30 days,
+            donatedAmount: 0,
+            amount: 100,
+            donors: new address[](0)
+        });
+        campaigns[1000] = testCampaign;
+        campaignIds.push(1000);
+    }
+
     event CampaignCreated(uint indexed campaignId, address campaignOwner, uint deadline, string imageUrl);
     event CampaignUpdated(uint indexed campaignId, address campaignOwner, uint deadline, string imageUrl);
 
@@ -67,6 +83,7 @@ contract CrowdFunding {
         newCampaign.amount = _amount;
 
         campaigns[currentCampaignId] = newCampaign;
+        campaignIds.push(currentCampaignId);
         emit CampaignCreated(currentCampaignId, _ownerAddress, _deadline, _imageUrl);
         
         currentCampaignId++;

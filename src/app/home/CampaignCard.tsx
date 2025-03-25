@@ -14,8 +14,9 @@ export const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
 
     const handleOnSelectCampaign = React.useCallback(() => {
         const { id: campaignId } = campaign;
+        console.log({ campaign, campaignId })
         router.push(`/campaign/${campaignId}`)
-    },[])
+    },[campaign, router])
 
     return (
         <Flex 

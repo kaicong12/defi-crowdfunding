@@ -13,7 +13,7 @@ import { useMemo, useCallback } from "react";
 
 const MissingWallet = () => {
     return (
-        <VStack minH="300px" alignItems="center" justifyContent="center" p={5} borderRadius="10px" textAlign="center">
+        <VStack color="white" minH="300px" alignItems="center" justifyContent="center" p={5} borderRadius="10px" textAlign="center">
             <Text fontSize="xl" color="white" fontWeight="bold">No Wallets Detected</Text>
             <Text fontSize="md" color="gray.500" width="80%" mt="12px">
                 Get started by installing MetaMask or another supported wallet.
@@ -37,7 +37,7 @@ const MissingWallet = () => {
 const ConnectYourWallet = ({ availableWallets, handleConnect }: IConnectWallet) => {
     // render this component when there is no wallet connected 
     return (
-        <VStack minH="300px" p={5} textAlign="center" justifyContent="center">
+        <VStack color="white" minH="300px" p={5} textAlign="center" justifyContent="center">
             <Text fontSize="lg" fontWeight="bold">No Wallet Connected</Text>
             <Text fontWeight="semibold" fontSize="md" color="gray.500" mb="12px">
                 Connect a wallet to start using the app.
@@ -68,7 +68,7 @@ const ConnectYourWallet = ({ availableWallets, handleConnect }: IConnectWallet) 
 const WalletInformation = ({ connectedWallet, userAccount, disconnectWallet }: IWalletInformation) => {
     // use this component to disconnect wallet
     return (
-        <VStack minH="300px" p={5} textAlign="center" justifyContent="center">
+        <VStack color="white" minH="300px" p={5} textAlign="center" justifyContent="center">
             <Image height="50" width="50" src={connectedWallet.icon} alt={connectedWallet.name} />
             <Text fontSize="lg" fontWeight="bold" mt="30px">Connected Wallet</Text>
             <Text mt="12px" fontSize="md" color="gray.500" mb="12px">
